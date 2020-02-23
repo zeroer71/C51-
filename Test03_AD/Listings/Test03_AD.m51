@@ -1,0 +1,212 @@
+BL51 BANKED LINKER/LOCATER V6.22                                                        01/13/2020  11:13:36  PAGE 1
+
+
+BL51 BANKED LINKER/LOCATER V6.22, INVOKED BY:
+E:\LEARNING_SYY\C51&STM32\KEIL5\C51\BIN\BL51.EXE .\Objects\STARTUP.obj, .\Objects\A_To_D.obj TO .\Objects\Test03_AD PRIN
+>> T (.\Listings\Test03_AD.m51) RAMSIZE (256)
+
+
+MEMORY MODEL: SMALL
+
+
+INPUT MODULES INCLUDED:
+  .\Objects\STARTUP.obj (?C_STARTUP)
+  .\Objects\A_To_D.obj (A_TO_D)
+
+
+LINK MAP OF MODULE:  .\Objects\Test03_AD (?C_STARTUP)
+
+
+            TYPE    BASE      LENGTH    RELOCATION   SEGMENT NAME
+            -----------------------------------------------------
+
+            * * * * * * *   D A T A   M E M O R Y   * * * * * * *
+            REG     0000H     0008H     ABSOLUTE     "REG BANK 0"
+            DATA    0008H     0005H     UNIT         _DATA_GROUP_
+            DATA    000DH     0003H     UNIT         ?DT?A_TO_D
+            IDATA   0010H     0001H     UNIT         ?STACK
+
+            * * * * * * *   C O D E   M E M O R Y   * * * * * * *
+            CODE    0000H     0003H     ABSOLUTE     
+            CODE    0003H     0054H     UNIT         ?PR?_DISPLAY?A_TO_D
+            CODE    0057H     0046H     UNIT         ?PR?MAIN?A_TO_D
+            CODE    009DH     0027H     UNIT         ?PR?_DELAY_MS?A_TO_D
+            CODE    00C4H     0010H     UNIT         ?CO?A_TO_D
+            CODE    00D4H     000CH     UNIT         ?C_C51STARTUP
+
+
+
+OVERLAY MAP OF MODULE:   .\Objects\Test03_AD (?C_STARTUP)
+
+
+SEGMENT                          DATA_GROUP 
+  +--> CALLED SEGMENT          START    LENGTH
+----------------------------------------------
+?C_C51STARTUP                  -----    -----
+  +--> ?PR?MAIN?A_TO_D
+
+?PR?MAIN?A_TO_D                0008H    0003H
+  +--> ?PR?_DISPLAY?A_TO_D
+
+?PR?_DISPLAY?A_TO_D            000BH    0002H
+  +--> ?CO?A_TO_D
+  +--> ?PR?_DELAY_MS?A_TO_D
+
+
+
+SYMBOL TABLE OF MODULE:  .\Objects\Test03_AD (?C_STARTUP)
+
+  VALUE           TYPE          NAME
+  ----------------------------------
+
+BL51 BANKED LINKER/LOCATER V6.22                                                      01/13/2020  11:13:36  PAGE 2
+
+
+  -------         MODULE        ?C_STARTUP
+  C:00D4H         SEGMENT       ?C_C51STARTUP
+  I:0010H         SEGMENT       ?STACK
+  C:0000H         PUBLIC        ?C_STARTUP
+  D:00E0H         SYMBOL        ACC
+  D:00F0H         SYMBOL        B
+  D:0083H         SYMBOL        DPH
+  D:0082H         SYMBOL        DPL
+  N:0000H         SYMBOL        IBPSTACK
+  N:0100H         SYMBOL        IBPSTACKTOP
+  N:0080H         SYMBOL        IDATALEN
+  C:00D7H         SYMBOL        IDATALOOP
+  N:0000H         SYMBOL        PBPSTACK
+  N:0100H         SYMBOL        PBPSTACKTOP
+  N:0000H         SYMBOL        PDATALEN
+  N:0000H         SYMBOL        PDATASTART
+  N:0000H         SYMBOL        PPAGE
+  N:0000H         SYMBOL        PPAGEENABLE
+  D:00A0H         SYMBOL        PPAGE_SFR
+  D:0081H         SYMBOL        SP
+  C:00D4H         SYMBOL        STARTUP1
+  N:0000H         SYMBOL        XBPSTACK
+  N:0000H         SYMBOL        XBPSTACKTOP
+  N:0000H         SYMBOL        XDATALEN
+  N:0000H         SYMBOL        XDATASTART
+  C:0000H         LINE#         126
+  C:00D4H         LINE#         133
+  C:00D6H         LINE#         134
+  C:00D7H         LINE#         135
+  C:00D8H         LINE#         136
+  C:00DAH         LINE#         185
+  C:00DDH         LINE#         196
+  -------         ENDMOD        ?C_STARTUP
+
+  -------         MODULE        A_TO_D
+  C:0000H         SYMBOL        _ICE_DUMMY_
+  D:0080H         PUBLIC        P0
+  D:0090H         PUBLIC        P1
+  D:00A0H         PUBLIC        P2
+  D:00B0H         PUBLIC        P3
+  C:00C4H         PUBLIC        table
+  D:00A8H         PUBLIC        IE
+  D:00B8H         PUBLIC        IP
+  B:00B0H.7       PUBLIC        adrd
+  C:0057H         PUBLIC        main
+  B:00A0H.6       PUBLIC        dula
+  B:00A0H.7       PUBLIC        wela
+  D:000DH         PUBLIC        bai
+  B:00B0H.6       PUBLIC        adwr
+  D:0098H         PUBLIC        SCON
+  D:0088H         PUBLIC        TCON
+  D:000EH         PUBLIC        shi
+  D:000FH         PUBLIC        ge
+  C:00A6H         PUBLIC        _delay_ms
+  D:00C8H         PUBLIC        T2CON
+  C:000AH         PUBLIC        _display
+  D:00D0H         PUBLIC        PSW
+BL51 BANKED LINKER/LOCATER V6.22                                                      01/13/2020  11:13:36  PAGE 3
+
+
+  -------         PROC          L?0017
+  -------         ENDPROC       L?0017
+  -------         PROC          _DELAY_MS
+  D:0006H         SYMBOL        n
+  -------         DO            
+  D:0006H         SYMBOL        i
+  D:0004H         SYMBOL        j
+  -------         ENDDO         
+  C:00A6H         LINE#         36
+  C:00A6H         LINE#         37
+  C:00A6H         LINE#         39
+  C:00AFH         LINE#         40
+  C:00C3H         LINE#         41
+  -------         ENDPROC       _DELAY_MS
+  -------         PROC          L?0018
+  -------         ENDPROC       L?0018
+  -------         PROC          _DISPLAY
+  D:0007H         SYMBOL        ge
+  D:000BH         SYMBOL        shi
+  D:0002H         SYMBOL        bai
+  C:000AH         LINE#         44
+  C:000EH         LINE#         45
+  C:000EH         LINE#         47
+  C:0010H         LINE#         48
+  C:0013H         LINE#         49
+  C:0015H         LINE#         50
+  C:0017H         LINE#         51
+  C:001BH         LINE#         52
+  C:001BH         LINE#         53
+  C:001EH         LINE#         56
+  C:0020H         LINE#         57
+  C:0023H         LINE#         58
+  C:0025H         LINE#         59
+  C:0027H         LINE#         60
+  C:0034H         LINE#         61
+  C:0034H         LINE#         62
+  C:0037H         LINE#         65
+  C:0039H         LINE#         66
+  C:003CH         LINE#         67
+  C:003EH         LINE#         68
+  C:0040H         LINE#         69
+  C:004EH         LINE#         70
+  C:0050H         LINE#         71
+  -------         ENDPROC       _DISPLAY
+  -------         PROC          MAIN
+  -------         DO            
+  D:0001H         SYMBOL        ADval
+  D:0008H         SYMBOL        A1
+  D:0009H         SYMBOL        A2
+  D:000AH         SYMBOL        A3
+  D:0001H         SYMBOL        count
+  -------         ENDDO         
+  C:0057H         LINE#         76
+  C:0057H         LINE#         77
+  C:0057H         LINE#         80
+  C:0059H         LINE#         81
+  C:005CH         LINE#         82
+BL51 BANKED LINKER/LOCATER V6.22                                                      01/13/2020  11:13:36  PAGE 4
+
+
+  C:005EH         LINE#         83
+  C:005EH         LINE#         84
+  C:005EH         LINE#         86
+  C:0060H         LINE#         87
+  C:0061H         LINE#         88
+  C:0063H         LINE#         89
+  C:0064H         LINE#         90
+  C:0066H         LINE#         93
+  C:0068H         LINE#         94
+  C:0068H         LINE#         95
+  C:0070H         LINE#         96
+  C:0072H         LINE#         99
+  C:0075H         LINE#         100
+  C:0077H         LINE#         101
+  C:0078H         LINE#         102
+  C:007AH         LINE#         103
+  C:007BH         LINE#         104
+  C:007DH         LINE#         105
+  C:007FH         LINE#         107
+  C:0086H         LINE#         108
+  C:0094H         LINE#         109
+  C:0096H         LINE#         110
+  C:009BH         LINE#         111
+  -------         ENDPROC       MAIN
+  -------         ENDMOD        A_TO_D
+
+Program Size: data=17.0 xdata=0 code=224
+LINK/LOCATE RUN COMPLETE.  0 WARNING(S),  0 ERROR(S)

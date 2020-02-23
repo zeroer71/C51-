@@ -1,0 +1,3 @@
+".\Objects\¾ØÕó¼üÅÌ¼ì²â.obj" 
+TO ".\Objects\Test02_KeyBoard" 
+PRINT(".\Listings\Test02_KeyBoard.m51") RAMSIZE(256) 

@@ -1,0 +1,4 @@
+".\Objects\STARTUP.obj",
+".\Objects\1602“∫æß∂ØÃ¨œ‘ æ.obj" 
+TO ".\Objects\Test05_LCD" 
+PRINT(".\Listings\Test05_LCD.m51") RAMSIZE(256) 

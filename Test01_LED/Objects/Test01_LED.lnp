@@ -1,0 +1,4 @@
+".\Objects\STARTUP.obj",
+".\Objects\定时器中断_流水灯_数码管.obj" 
+TO ".\Objects\Test01_LED" 
+PRINT(".\Listings\Test01_LED.m51") RAMSIZE(256) 

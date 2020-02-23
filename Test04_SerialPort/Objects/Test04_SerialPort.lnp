@@ -1,0 +1,5 @@
+".\Objects\STARTUP.obj",
+".\Objects\串口打印AD转换值.obj" 
+TO ".\Objects\Test04_SerialPort" 
+PRINT(".\Listings\Test04_SerialPort.m51") RAMSIZE(256) 
+CODE( 0X0000-0X1FFF )

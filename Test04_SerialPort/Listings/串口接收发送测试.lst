@@ -1,0 +1,105 @@
+C51 COMPILER V9.54   ________________                                                      01/13/2020 22:07:35 PAGE 1   
+
+
+C51 COMPILER V9.54, COMPILATION OF MODULE ________________
+OBJECT MODULE PLACED IN .\Objects\串口接收发送测试.obj
+COMPILER INVOKED BY: E:\Learning_syy\C51&STM32\Keil5\C51\BIN\C51.EXE 串口接收发送测试.c LARGE OPTIMIZE(8,SPEED) BROWSE D
+                    -EBUG OBJECTEXTEND PRINT(.\Listings\串口接收发送测试.lst) TABS(2) OBJECT(.\Objects\串口接收发送测试.obj)
+
+line level    source
+
+   1          /*
+   2          **********************************************************************************************************
+             -*************************************
+   3          *
+   4          *   模块名称 ： 串口模块
+   5          *   文件名称 ： 串口接收发送.c
+   6          *   版本     ： v1.0
+   7          *   说明     ： 上位机通过串口助手发送字符"X"给单片机，单片机返回给上位机"I get X"
+   8          *   修改记录 ：
+   9          *       版本号  日期        作者      说明
+  10          *       v1.0  2020-01-13  Yang      v1.0版本进行测试
+  11          *       
+  12          *
+  13          **********************************************************************************************************
+             -*************************************
+  14          */
+  15          
+  16          #include <reg52.h>
+  17          
+  18          #define uchar unsigned char
+  19          #define uint unsigned int
+  20          uchar temp,FlagRx;
+  21          uint i;
+  22          uchar code table[]="I get ";
+  23          
+  24          /*进行定时器、串口、中断初始化*/
+  25          void Init()
+  26          {
+  27   1        /*定时器1*/
+  28   1        TMOD=0x20;//工作方式2
+  29   1        TH1=0xfd;
+  30   1        TL1=0xfd;//装初值
+  31   1        TR1=1;//此处不用开启定时器1中断（ET1=0）,因为工作方式2是8位初值自动重装的8位定时器/计数器
+  32   1        
+  33   1        /*串口*/
+  34   1        SM0=0;
+  35   1        SM1=1;//工作方式1
+  36   1        REN=1;
+  37   1        
+  38   1        
+  39   1        /*中断*/
+  40   1        EA=1;//开启总中断
+  41   1        ES=1;//开启串口中断
+  42   1      } 
+  43          
+  44          int main()
+  45          {
+  46   1        Init();
+  47   1        while(1)
+  48   1        {
+  49   2          if(FlagRx==1)//接收完成,开始发送
+  50   2          {
+  51   3            ES=0;
+  52   3            for(i=0;i<6;i++)
+C51 COMPILER V9.54   ________________                                                      01/13/2020 22:07:35 PAGE 2   
+
+  53   3            {
+  54   4              SBUF=table[i];
+  55   4              while(!TI);//等待发送完成
+  56   4              TI=0;
+  57   4            }
+  58   3            SBUF=temp;
+  59   3            while(!TI);
+  60   3            TI=0;
+  61   3            ES=1;
+  62   3            FlagRx=0;
+  63   3          }
+  64   2        
+  65   2        }
+  66   1        return 0;
+  67   1      
+  68   1      }
+  69          
+  70          /*串口中断服务程序,接收字符*/
+  71          void Ser_Rx_Msg() interrupt 4
+  72          {
+  73   1        RI=0;
+  74   1        temp=SBUF;
+  75   1        FlagRx=1;
+  76   1      }
+*** WARNING C294 IN LINE 66 OF 串口接收发送测试.c: unreachable code
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    135    ----
+   CONSTANT SIZE    =      7    ----
+   XDATA SIZE       =      4    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  1 WARNING(S),  0 ERROR(S)

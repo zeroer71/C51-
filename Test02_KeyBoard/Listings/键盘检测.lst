@@ -1,0 +1,184 @@
+C51 COMPILER V9.54   ________                                                              01/11/2020 23:38:57 PAGE 1   
+
+
+C51 COMPILER V9.54, COMPILATION OF MODULE ________
+OBJECT MODULE PLACED IN .\Objects\键盘检测.obj
+COMPILER INVOKED BY: E:\Learning_syy\C51&STM32\Keil5\C51\BIN\C51.EXE 键盘检测.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXT
+                    -END PRINT(.\Listings\键盘检测.lst) TABS(2) OBJECT(.\Objects\键盘检测.obj)
+
+line level    source
+
+   1          /*
+   2          **********************************************************************************************************
+             -*************************************
+   3          *
+   4          *   模块名称 ： 数码管模块、独立按键模块
+   5          *   文件名称 ： 键盘检测.c
+   6          *   版本     ： v1.0
+   7          *   说明     ： 按键控制数码管的显示，S2使数字加一，S3使数字减一，S4使数字复位，S5控制定时器自动显示数字
+   8          *   修改记录 ：
+   9          *       版本号  日期        作者      说明
+  10          *       v1.0    2020-01-11  Yang      v1.0版本进行测试
+  11          *       
+  12          *
+  13          **********************************************************************************************************
+             -*************************************
+  14          */
+  15          
+  16          #include <reg52.h>
+  17          #define uchar unsigned char
+  18          #define uint unsigned int
+  19          
+  20          sbit dula=P2^6;
+  21          sbit wela=P2^7;
+  22          sbit KEY_S2=P3^4;
+  23          sbit KEY_S3=P3^5;
+  24          sbit KEY_S4=P3^6;
+  25          sbit KEY_S5=P3^7;
+  26          uint ge,shi;
+  27          uint NumTotal,NumT0;
+  28          
+  29          uchar code table[]={
+  30            0x3f,0x06,0x5b,0x4f,
+  31            0x66,0x6d,0x7d,0x07,
+  32            0x7f,0x6f,0x77,0x7c,
+  33            0x39,0x5e,0x79,0x71
+  34          };
+  35          
+  36          /*延时函数，延时n毫秒*/
+  37          void delay_ms(uint n)
+  38          {
+  39   1        uint i,j;
+  40   1        for(i=n;i>0;i--)
+  41   1          for(j=110;j>0;j--);
+  42   1      }
+  43          
+  44          /*显示数码管前两位*/
+  45          void display(uint Num)
+  46          {
+  47   1        /*显示个位*/
+  48   1        ge=Num%10;
+  49   1        wela=1;
+  50   1        P0=0xdf;
+  51   1        wela=0;
+  52   1        dula=1;
+C51 COMPILER V9.54   ________                                                              01/11/2020 23:38:57 PAGE 2   
+
+  53   1        P0=table[ge];
+  54   1        dula=0;
+  55   1        delay_ms(5);
+  56   1        
+  57   1        /*显示十位*/
+  58   1        shi=Num/10;
+  59   1        wela=1;
+  60   1        P0=0xef;
+  61   1        wela=0;
+  62   1        dula=1;
+  63   1        P0=table[shi];
+  64   1        dula=0;
+  65   1        delay_ms(5);
+  66   1        
+  67   1      }
+  68          
+  69          /*初始化定时器0，工作方式1，16位定时器*/
+  70          void Init()
+  71          {
+  72   1        TMOD=0x01;
+  73   1        /*装初值，50ms*/
+  74   1        TH0=(65536-48572)/256;
+  75   1        TL0=(65536-48572)%256;
+  76   1        EA=1;
+  77   1        ET0=1;
+  78   1      }
+  79          
+  80          
+  81          /*定时器0中断函数*/
+  82          void T0_Time() interrupt 1
+  83          {
+  84   1        /*装初值，50ms*/
+  85   1        TH0=(65536-48572)/256;
+  86   1        TL0=(65536-48572)%256;
+  87   1        
+  88   1        NumT0++;
+  89   1        if(NumT0==20)//到1s
+  90   1        {
+  91   2          NumT0=0;
+  92   2          NumTotal++;
+  93   2          if(NumTotal==60) NumTotal=0;
+  94   2        }
+  95   1      }
+  96          
+  97          /*扫描独立按键*/
+  98          void KeyScan()
+  99          {
+ 100   1        if(KEY_S2==0)
+ 101   1        {
+ 102   2          delay_ms(10);
+ 103   2          if(KEY_S2==0)
+ 104   2          {
+ 105   3            NumTotal++;
+ 106   3            if(NumTotal==60) NumTotal=0;
+ 107   3            while(!KEY_S2);//等待按键松开
+ 108   3          }
+ 109   2        }
+ 110   1        
+ 111   1        if(KEY_S3==0)
+ 112   1        {
+ 113   2          delay_ms(10);
+ 114   2          if(KEY_S3==0)
+C51 COMPILER V9.54   ________                                                              01/11/2020 23:38:57 PAGE 3   
+
+ 115   2          {
+ 116   3            if(NumTotal==0) NumTotal=60;
+ 117   3            NumTotal--;
+ 118   3            while(!KEY_S3);
+ 119   3          }
+ 120   2        }
+ 121   1        
+ 122   1        if(KEY_S4==0)
+ 123   1        {
+ 124   2          delay_ms(10);
+ 125   2          if(KEY_S4==0)
+ 126   2          {
+ 127   3            NumTotal=0;
+ 128   3            while(!KEY_S4);
+ 129   3          }
+ 130   2        }
+ 131   1        
+ 132   1        if(KEY_S5==0)
+ 133   1        {
+ 134   2          delay_ms(10);
+ 135   2          if(KEY_S5==0)
+ 136   2          {
+ 137   3            while(!KEY_S5);
+ 138   3            TR0=~TR0;
+ 139   3          }
+ 140   2        }
+ 141   1      }
+ 142          
+ 143          int main()
+ 144          {
+ 145   1        Init();
+ 146   1        
+ 147   1        while(1)
+ 148   1        {
+ 149   2          KeyScan();
+ 150   2          display(NumTotal);
+ 151   2        }
+ 152   1        return 0;
+ 153   1      }
+*** WARNING C294 IN LINE 152 OF 键盘检测.c: unreachable code
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    301    ----
+   CONSTANT SIZE    =     16    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =      8    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  1 WARNING(S),  0 ERROR(S)
