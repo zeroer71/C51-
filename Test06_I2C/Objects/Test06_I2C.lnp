@@ -1,0 +1,4 @@
+".\Objects\STARTUP.obj",
+".\Objects\99√Î÷∆µƒ√Î±Ì.obj" 
+TO ".\Objects\Test06_I2C" 
+PRINT(".\Listings\Test06_I2C.m51") RAMSIZE(256) 

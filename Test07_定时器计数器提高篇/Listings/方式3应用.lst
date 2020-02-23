@@ -1,0 +1,90 @@
+C51 COMPILER V9.54   ____3____                                                             01/19/2020 18:33:35 PAGE 1   
+
+
+C51 COMPILER V9.54, COMPILATION OF MODULE ____3____
+OBJECT MODULE PLACED IN .\Objects\方式3应用.obj
+COMPILER INVOKED BY: E:\Learning_syy\C51&STM32\Keil5\C51\BIN\C51.EXE 方式3应用.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEX
+                    -TEND PRINT(.\Listings\方式3应用.lst) TABS(2) OBJECT(.\Objects\方式3应用.obj)
+
+line level    source
+
+   1          /*
+   2          **********************************************************************************************************
+             -*************************************
+   3          *
+   4          *   模块名称 ： 发光灯模块
+   5          *   文件名称 ： 方式3应用.c
+   6          *   版本     ： v1.0
+   7          *   说明     ： 定时器0的工作方式3,TL0计数器对应的8位定时器实现第一个发光灯以1s间隔闪烁，
+   8          *               用TH0计数器对应的8位定时器实现第二个发光灯间隔0.5s闪烁
+   9          *   修改记录 ：
+  10          *       版本号  日期        作者      说明
+  11          *       v1.0    2020-01-19  Yang      v1.0版本进行测试
+  12          *     
+  13          *
+  14          **********************************************************************************************************
+             -*************************************
+  15          */
+  16          
+  17          #include <reg52.h>
+  18          #define uchar unsigned char
+  19          #define uint unsigned int
+  20          
+  21          sbit led1=P1^0;
+  22          sbit led2=P1^1;
+  23          uint count1,count2;
+  24          
+  25          void main()
+  26          {
+  27   1        TMOD=0x03;//定时器0，工作方式3
+  28   1        TH0=6;//装初值
+  29   1        TL0=6;
+  30   1        EA=1;
+  31   1        ET0=1;
+  32   1        ET1=1;
+  33   1        TR0=1;
+  34   1        TR1=1;
+  35   1        
+  36   1        while(1)
+  37   1        {
+  38   2          if(count1>=3686)
+  39   2          {
+  40   3            count1=0;
+  41   3            led1=~led1;
+  42   3          }
+  43   2           if(count2>=1843)
+  44   2           {
+  45   3            count2=0;
+  46   3             led2=~led2;
+  47   3           }
+  48   2        }
+  49   1      }
+  50          
+  51          /*定时器0中断服务函数*/
+  52          void TL0_time() interrupt 1
+C51 COMPILER V9.54   ____3____                                                             01/19/2020 18:33:35 PAGE 2   
+
+  53          {
+  54   1        TL0=6;
+  55   1        count1++;
+  56   1      }
+  57          
+  58          void TH0_time() interrupt 3
+  59          {
+  60   1        TH0=6;
+  61   1        count2++;
+  62   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =     89    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =      4    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

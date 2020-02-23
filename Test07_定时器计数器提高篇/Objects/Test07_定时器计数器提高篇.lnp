@@ -1,0 +1,4 @@
+".\Objects\STARTUP.obj",
+".\Objects\计算引脚输出的方波个数.obj" 
+TO ".\Objects\Test07_定时器计数器提高篇" 
+PRINT(".\Listings\Test07_定时器计数器提高篇.m51") RAMSIZE(256) 
