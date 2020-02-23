@@ -1,0 +1,4 @@
+".\Objects\STARTUP.obj",
+".\Objects\按键控制时钟显示.obj" 
+TO ".\Objects\Test11_设计时钟" 
+PRINT(".\Listings\Test11_设计时钟.m51") RAMSIZE(256) 

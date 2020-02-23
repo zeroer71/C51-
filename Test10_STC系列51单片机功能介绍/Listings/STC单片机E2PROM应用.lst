@@ -1,0 +1,223 @@
+C51 COMPILER V9.54   STC______E2PROM____                                                   01/31/2020 22:43:50 PAGE 1   
+
+
+C51 COMPILER V9.54, COMPILATION OF MODULE STC______E2PROM____
+OBJECT MODULE PLACED IN .\Objects\STCµ¥Æ¬»úE2PROMÓ¦ÓÃ.obj
+COMPILER INVOKED BY: E:\Learning_syy\C51&STM32\Keil5\C51\BIN\C51.EXE STCµ¥Æ¬»úE2PROMÓ¦ÓÃ.c OPTIMIZE(8,SPEED) BROWSE DEBU
+                    -G OBJECTEXTEND PRINT(.\Listings\STCµ¥Æ¬»úE2PROMÓ¦ÓÃ.lst) TABS(2) OBJECT(.\Objects\STCµ¥Æ¬»úE2PROMÓ¦ÓÃ.obj)
+
+line level    source
+
+   1          /*
+   2          **********************************************************************************************************
+             -*************************************
+   3          *
+   4          *   Ä£¿éÃû³Æ £º ÊýÂë¹ÜÄ£¿é,E2PROMÄ£¿é
+   5          *   ÎÄ¼þÃû³Æ £º STCµ¥Æ¬»úE2PROMÓ¦ÓÃ.c
+   6          *   °æ±¾     £º v1.0
+   7          *   ËµÃ÷     £º²Ù×÷STCµ¥Æ¬»ú×Ô´øµÄE2PROM£¬´æ´¢Ò»×é°´ÃëµÝÔöµÄÁ½Î»Êý¾Ý£¬²¢ÇÒÔÚÊýÂë¹ÜÉÏÏÔÊ¾£¬Êý¾ÝÃ¿ÏÔÊ¾Ò»´Î¾ÍÐ´È
+             -ëÒ»´Î
+   8          *              µ±¹Ø±ÕÊµÑé°åµçÔ´ÔÙ¿ªÆôÊ±£¬´ÓE2PROM¶ÁÈ¡Êý¾Ý²¢ÏÔÊ¾ÔÚÊýÂë¹ÜÉÏ
+   9          * 
+  10          *           
+  11          *   ÐÞ¸Ä¼ÇÂ¼ £º
+  12          *       °æ±¾ºÅ    ÈÕÆÚ        ×÷Õß      ËµÃ÷
+  13          *       v1.0    2020-01-31  Yang      v1.0°æ±¾½øÐÐ²âÊÔ
+  14          *       
+  15          *
+  16          **********************************************************************************************************
+             -*************************************
+  17          */
+  18          
+  19          #include <reg52.h>
+  20          #include <intrins.h>
+  21          #define uchar unsigned char
+  22          #define uint unsigned int
+  23          
+  24          /****¶¨ÒåISPµÄ²Ù×÷ÃüÁî****/
+  25          #define RdCommand 0x01//¶ÁÃüÁî
+  26          #define PrgCommand 0x02//±à³ÌÃüÁî
+  27          #define EraseCommand 0x03//²ÁÐ´ÃüÁî
+  28          
+  29          /****¶¨Òå³£¹æÖ¸Ê¾****/
+  30          #define Error 1
+  31          #define Ok 0
+  32          #define WaitTime 0x01//¶¨ÒåCPUµÄµÈ´ýÊ±¼ä
+  33          
+  34          /****¶¨ÒåISPÏà¹Ø¼Ä´æÆ÷****/
+  35          sfr  ISP_DATA=0xe2;
+  36          sfr  ISP_ADDRH=0xe3;
+  37          sfr  ISP_ADDRL=0xe4;
+  38          sfr  ISP_CMD=0xe5;
+  39          sfr  ISP_TRIG=0xe6;
+  40          sfr  ISP_CONTR=0xe7;
+  41          
+  42          /****¶¨ÒåÊýÂë¹ÜÏà¹Ø²Ù×÷****/
+  43          sbit dula=P2^6;
+  44          sbit wela=P2^7;
+  45          uchar code table[]={
+  46            0x3f,0x06,0x5b,0x4f,
+  47            0x66,0x6d,0x7d,0x07,
+  48            0x7f,0x6f,0x77,0x7c,
+  49            0x39,0x5e,0x79,0x71
+  50          };
+  51          
+C51 COMPILER V9.54   STC______E2PROM____                                                   01/31/2020 22:43:50 PAGE 2   
+
+  52          uchar num_ms;
+  53          
+  54          /****ÑÓÊ±º¯Êý£¬ÑÓÊ±nºÁÃë****/
+  55          void delay_ms(uint n)
+  56          {
+  57   1        uint i,j;
+  58   1        for(i=n;i>0;i--)
+  59   1          for(j=110;j>0;j--);
+  60   1      }
+  61          
+  62          /****ÏÔÊ¾ÊýÂë¹ÜÇ°Á½Î»****/
+  63          void display(uchar ge,uchar shi)
+  64          {
+  65   1        /*ÏÔÊ¾¸öÎ»*/
+  66   1        wela=1;
+  67   1        P0=0xdf;
+  68   1        wela=0;
+  69   1        dula=1;
+  70   1        P0=table[ge];
+  71   1        dula=0;
+  72   1        delay_ms(5);
+  73   1        
+  74   1        /*ÏÔÊ¾Ê®Î»*/
+  75   1        wela=1;
+  76   1        P0=0xef;
+  77   1        wela=0;
+  78   1        dula=1;
+  79   1        P0=table[shi];
+  80   1        dula=0;
+  81   1        delay_ms(5);  
+  82   1      }
+  83          
+  84          /****´ò¿ªISP,IAP¹¦ÄÜ****/
+  85          void ISP_IAP_enable()
+  86          {
+  87   1        EA=0;//¹ØÖÐ¶Ï
+  88   1        ISP_CONTR=ISP_CONTR&0x18;//ÊéÉÏÓÐÕâ²½£¬²»Ì«Ã÷°×Õâ²½µÄÒâË¼
+  89   1        ISP_CONTR=ISP_CONTR|WaitTime;
+  90   1        ISP_CONTR=0x80;//ISPEN=1
+  91   1      }
+  92          
+  93          /****¹Ø±ÕISP,IAP¹¦ÄÜ****/
+  94          void ISP_IAP_disable()
+  95          {
+  96   1        ISP_CONTR=0x00;//ISPEN=0
+  97   1        ISP_TRIG=0x00;
+  98   1        EA=1;//¿ªÖÐ¶Ï
+  99   1      }
+ 100          
+ 101          /****¹«ÓÃº¯Êý****/
+ 102          void ISP_public()
+ 103          {
+ 104   1        ISP_IAP_enable();
+ 105   1        ISP_TRIG=0x46;//´¥·¢ISP_IAPÃüÁî×Ö½Ú1
+ 106   1        ISP_TRIG=0xb9;//´¥·¢ISP_IAPÃüÁî×Ö½Ú2
+ 107   1        _nop_();
+ 108   1      }
+ 109          
+ 110          /****×Ö½Ú¶ÁÈ¡****/
+ 111          uchar byte_read(uint byte_addr)
+ 112          {
+ 113   1        ISP_ADDRH=(uchar)(byte_addr>>8);//´æÈëµØÖ·µÄ8Î»
+C51 COMPILER V9.54   STC______E2PROM____                                                   01/31/2020 22:43:50 PAGE 3   
+
+ 114   1        ISP_ADDRL=(uchar)(byte_addr&0x00ff);//´æÈëµØÖ·µÄµÍ8Î»
+ 115   1        ISP_CMD=ISP_CMD&0xf8;//Çå³ýµÍ3Î»
+ 116   1        ISP_CMD=ISP_CMD|RdCommand;//Ð´Èë¶ÁÃüÁî
+ 117   1        ISP_public();//Ö´ÐÐÃüÁî
+ 118   1        ISP_IAP_disable();
+ 119   1        return ISP_DATA;
+ 120   1      }
+ 121          
+ 122          /****ÉÈÇø²Á³ý****/
+ 123          void SectorErase(uint sector_addr)
+ 124          {
+ 125   1        uint iSectorAddr;
+ 126   1        iSectorAddr=sector_addr&0xfe00;//È¡ÉÈÇøµØÖ·
+ 127   1        ISP_ADDRH=(uchar)(iSectorAddr>>8);//´æÈëµØÖ·µÄ8Î»
+ 128   1        ISP_ADDRL=0x00;//´æÈëµØÖ·µÄµÍ8Î»
+ 129   1        ISP_CMD=ISP_CMD&0xf8;//Çå³ýµÍ3Î»
+ 130   1        ISP_CMD=ISP_CMD|EraseCommand;//Ð´Èë²Á³ýÃüÁî
+ 131   1        ISP_public();//Ö´ÐÐÃüÁî
+ 132   1        ISP_IAP_disable();
+ 133   1      }
+ 134          
+ 135          /****×Ö½ÚÐ´****/
+ 136          void byte_write(uint byte_addr,uchar byte_data)
+ 137          {
+ 138   1        ISP_ADDRH=(uchar)(byte_addr>>8);//´æÈëµØÖ·µÄ8Î»
+ 139   1        ISP_ADDRL=(uchar)(byte_addr&0x00ff);//´æÈëµØÖ·µÄµÍ8Î»
+ 140   1        ISP_CMD=ISP_CMD&0xf8;//Çå³ýµÍ3Î»
+ 141   1        ISP_CMD=ISP_CMD|PrgCommand;//Ð´Èë×Ö½ÚÐ´ÃüÁî
+ 142   1        ISP_DATA=byte_data;//Ð´ÈëÊý¾Ý
+ 143   1        ISP_public();//Ö´ÐÐÃüÁî
+ 144   1        ISP_IAP_disable();
+ 145   1      }
+ 146          
+ 147          /****Ö÷º¯Êý****/
+ 148          void main()
+ 149          {
+ 150   1        uchar num_s;
+ 151   1        
+ 152   1        /*¿ªÆô¶¨Ê±Æ÷0£¬ÉèÎª¹¤×÷·½Ê½1*/
+ 153   1        TMOD=0x01;
+ 154   1        TH0=(65536-50000)/256;//×°³õÖµ£¬50msÒ»´Î
+ 155   1        TL0=(65536-50000)%256;
+ 156   1        TR0=1;
+ 157   1        
+ 158   1        /*¿ªÆôÖÐ¶Ï*/
+ 159   1        EA=1;//×ÜÖÐ¶Ï
+ 160   1        ET0=1;//¶¨Ê±Æ÷0ÖÐ¶Ï
+ 161   1        
+ 162   1        /*³ÌÐò¿ªÊ¼Ê±£¬´ÓE2PROM¶ÁÈ¡Êý¾Ý*/
+ 163   1        num_s=byte_read(0x2000);
+ 164   1        
+ 165   1        if(num_s>=60)//·ÀÖ¹Ê×´ÎÉÏµç¶ÁÈ¡´íÎó
+ 166   1          num_s=0;
+ 167   1        while(1)
+ 168   1        {
+ 169   2          if(num_ms>=20)
+ 170   2          {
+ 171   3            num_ms=0;
+ 172   3            num_s++;
+ 173   3            SectorErase(0x2000);//²Á³ýÉÈÇø
+ 174   3            byte_write(0x2000,num_s);//ÍùE2PROMÐ´ÈëÊý¾Ý
+ 175   3            if(num_s==60)
+C51 COMPILER V9.54   STC______E2PROM____                                                   01/31/2020 22:43:50 PAGE 4   
+
+ 176   3            {
+ 177   4              num_s=0;
+ 178   4            }
+ 179   3          }
+ 180   2          display(num_s%10,num_s/10);
+ 181   2        }
+ 182   1      }
+ 183          
+ 184          /****¶¨Ê±Æ÷0ÖÐ¶Ï·þÎñº¯Êý****/
+ 185          void T0_time() interrupt 1
+ 186          {
+ 187   1        TH0=(65536-50000)/256;//×°³õÖµ£¬50msÒ»´Î
+ 188   1        TL0=(65536-50000)%256;
+ 189   1        num_ms++;
+ 190   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    266    ----
+   CONSTANT SIZE    =     16    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =      1    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

@@ -1,0 +1,205 @@
+C51 COMPILER V9.54   ________                                                              01/27/2020 17:02:03 PAGE 1   
+
+
+C51 COMPILER V9.54, COMPILATION OF MODULE ________
+OBJECT MODULE PLACED IN .\Objects\主机程序.obj
+COMPILER INVOKED BY: E:\Learning_syy\C51&STM32\Keil5\C51\BIN\C51.EXE 主机程序.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXT
+                    -END PRINT(.\Listings\主机程序.lst) TABS(2) OBJECT(.\Objects\主机程序.obj)
+
+line level    source
+
+   1          /*
+   2          **********************************************************************************************************
+             -*************************************
+   3          6
+   4          *   模块名称 ： 串口模块
+   5          *   文件名称 ： 主机程序.c
+   6          *   版本     ： v1.0
+   7          *   说明     ： 单片机多机通信，约定一次传送的数据为16B,从机地址为02H
+   8          *   修改记录 ：
+   9          *       版本号    日期        作者      说明
+  10          *       v1.0    2020-01-27  Yang      v1.0版本进行测试
+  11          *       
+  12          *       
+  13          *
+  14          **********************************************************************************************************
+             -*************************************
+  15          */
+  16          
+  17          #include <reg52.h>
+  18          #define uchar unsigned char
+  19          #define uint unsigned int
+  20          
+  21          #define SLAVE 0x02
+  22          #define LENGTH 16
+  23          uchar rbuf[16];
+  24          uchar code tbuf[16]={"master transmit"};
+  25          
+  26          /*发送复位信号*/
+  27          void error()
+  28          {
+  29   1        SBUF=0xff;
+  30   1        while(TI!=1);
+  31   1        TI=0;
+  32   1      }
+  33          
+  34          /**函数:master()
+  35            *功能：主机与从机进行通信，主机传送命令给从机，根据命令的功能判断为发送数据或接收数据
+  36            *输入：从机地址address,命令command
+  37            *输出：0
+  38            */
+  39          uchar master(uchar address,uchar command)
+  40          {
+  41   1        uchar i,temp,pbuf;
+  42   1        while(1)
+  43   1        {
+  44   2          SBUF=SLAVE;//发呼叫地址
+  45   2          while(TI!=1);//等待主机发送完
+  46   2          TI=0;
+  47   2          while(RI!=1);//等待从机应答
+  48   2          RI=0;
+  49   2          if(SBUF!=address)//若地址错，则发送复位信号
+  50   2          {
+  51   3            error();
+  52   3          }
+C51 COMPILER V9.54   ________                                                              01/27/2020 17:02:03 PAGE 2   
+
+  53   2          
+  54   2          else
+  55   2          {
+  56   3            TB8=0;//将地址标志清零
+  57   3            SBUF=command;//发送命令
+  58   3            while(TI!=1);
+  59   3            TI=0;
+  60   3            while(RI!=1);
+  61   3            RI=0;
+  62   3            temp=SBUF;
+  63   3            
+  64   3            /*从机没收到命令，则RB8=0，复位发送信号*/
+  65   3            if(temp&&0x08==0x08)
+  66   3            {
+  67   4              TB8=1;
+  68   4              error();
+  69   4            }
+  70   3            
+  71   3            /*从机收到命令，主机开始执行*/
+  72   3            else
+  73   3            {
+  74   4              /*发送数据*/
+  75   4              if(command==0x01)
+  76   4              {
+  77   5                if(temp&&0x01==0x01)//RRDY=1,从机接收就绪
+  78   5                {
+  79   6                  do
+  80   6                  {
+  81   7                    pbuf=0;//清校验和
+  82   7                    
+  83   7                    /*开始发送16B数据*/
+  84   7                    for(i=0;i<LENGTH;i++)
+  85   7                    {
+  86   8                      SBUF=tbuf[i];//发送一数据
+  87   8                      pbuf+=tbuf[i];
+  88   8                      while(TI!=1);
+  89   8                      TI=0;
+  90   8                    }
+  91   7                    
+  92   7                    /*发送校验和*/
+  93   7                    SBUF=pbuf;
+  94   7                    while(TI!=1);
+  95   7                    TI=0;
+  96   7                    while(RI!=1);
+  97   7                    RI=0;
+  98   7                    
+  99   7                    return 0;
+ 100   7                  }while(SBUF!=0);
+ 101   6                  
+ 102   6                  TB8=1;//发送数据完毕，置地址标志
+ 103   6                }
+ 104   5                return 0;
+ 105   5                
+ 106   5              }
+ 107   4              
+ 108   4              /*接收数据*/
+ 109   4              else if(command==0x02)
+ 110   4              {
+ 111   5                if(temp&&0x02==0x02)//TRDY=1,从机发送就绪
+ 112   5                {
+ 113   6                  while(1)
+ 114   6                  {
+C51 COMPILER V9.54   ________                                                              01/27/2020 17:02:03 PAGE 3   
+
+ 115   7                    pbuf=0;//清校验和
+ 116   7                    
+ 117   7                    for(i=0;i<LENGTH;i++)
+ 118   7                    {
+ 119   8                      while(RI!=1);
+ 120   8                      RI=0;
+ 121   8                      rbuf[i]=SBUF;//接收一数据
+ 122   8                      pbuf+=rbuf[i];//将用于校验的数据存好
+ 123   8                    }
+ 124   7                    
+ 125   7                    /*接收检验和*/
+ 126   7                    while(RI!=1);
+ 127   7                    RI=0;
+ 128   7                    if(SBUF==pbuf)
+ 129   7                    {
+ 130   8                      SBUF=0x00;//校验和相同发00
+ 131   8                      while(TI!=1);
+ 132   8                      TI=0;
+ 133   8                      break;
+ 134   8                    }
+ 135   7                    
+ 136   7                    else
+ 137   7                    {
+ 138   8                      SBUF=0xff;//校验和不同发ff
+ 139   8                      while(TI!=1);
+ 140   8                      TI=0;
+ 141   8                    }
+ 142   7                  }
+ 143   6                  
+ 144   6                  TB8=1;//置地址标志
+ 145   6                  return 0;
+ 146   6                }
+ 147   5              }
+ 148   4            
+ 149   4            }
+ 150   3            
+ 151   3          }
+ 152   2        }
+ 153   1      
+ 154   1      }
+ 155          
+ 156          /*主函数*/
+ 157          void main()
+ 158          {
+ 159   1        /*开启定时器1，工作方式2*/
+ 160   1        TMOD=0x20;
+ 161   1        TH1=0xfd;
+ 162   1        TL1=0xfd;
+ 163   1        TR1=1;
+ 164   1        
+ 165   1        PCON=0x00;//功率控制寄存器
+ 166   1        SCON=0xf8;//串行口为方式3
+ 167   1        
+ 168   1        master(SLAVE,0x01);
+ 169   1        master(SLAVE,0x02);
+ 170   1        
+ 171   1        while(1);
+ 172   1      }
+*** WARNING C294 IN LINE 100 OF 主机程序.c: unreachable code
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+C51 COMPILER V9.54   ________                                                              01/27/2020 17:02:03 PAGE 4   
+
+   CODE SIZE        =    202    ----
+   CONSTANT SIZE    =     16    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =     16    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  1 WARNING(S),  0 ERROR(S)

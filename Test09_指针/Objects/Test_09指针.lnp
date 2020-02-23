@@ -1,0 +1,4 @@
+".\Objects\STARTUP.obj",
+".\Objects\指针调试.obj" 
+TO ".\Objects\Test_09指针" 
+PRINT(".\Listings\Test_09指针.m51") RAMSIZE(256) 

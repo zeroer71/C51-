@@ -1,0 +1,4 @@
+".\Objects\STARTUP.obj",
+".\Objects\STC单片机E2PROM应用.obj" 
+TO ".\Objects\Test10_STC系列51单片机功能介绍" 
+PRINT(".\Listings\Test10_STC系列51单片机功能介绍.m51") RAMSIZE(256) 

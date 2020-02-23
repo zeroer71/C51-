@@ -1,0 +1,4 @@
+".\Objects\STARTUP.obj",
+".\Objects\二维数组_指针变量.obj" 
+TO ".\Objects\Test08_串行口提高篇01" 
+PRINT(".\Listings\Test08_串行口提高篇01.m51") RAMSIZE(256) 

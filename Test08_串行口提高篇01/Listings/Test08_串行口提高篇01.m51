@@ -1,0 +1,180 @@
+BL51 BANKED LINKER/LOCATER V6.22                                                        01/28/2020  14:37:36  PAGE 1
+
+
+BL51 BANKED LINKER/LOCATER V6.22, INVOKED BY:
+E:\LEARNING_SYY\C51&STM32\KEIL5\C51\BIN\BL51.EXE .\Objects\STARTUP.obj, .\Objects\二维数组_指针变量.obj TO .\Objects\Tes
+>> t08_串行口提高篇01 PRINT (.\Listings\Test08_串行口提高篇01.m51) RAMSIZE (256)
+
+
+MEMORY MODEL: SMALL
+
+
+INPUT MODULES INCLUDED:
+  .\Objects\STARTUP.obj (?C_STARTUP)
+  .\Objects\二维数组_指针变量.obj (_________________)
+  E:\LEARNING_SYY\C51&STM32\KEIL5\C51\LIB\C51S.LIB (?C_INIT)
+  E:\LEARNING_SYY\C51&STM32\KEIL5\C51\LIB\C51S.LIB (?C?ILDPTR)
+  E:\LEARNING_SYY\C51&STM32\KEIL5\C51\LIB\C51S.LIB (PRINTF)
+  E:\LEARNING_SYY\C51&STM32\KEIL5\C51\LIB\C51S.LIB (?C?CLDPTR)
+  E:\LEARNING_SYY\C51&STM32\KEIL5\C51\LIB\C51S.LIB (?C?CLDOPTR)
+  E:\LEARNING_SYY\C51&STM32\KEIL5\C51\LIB\C51S.LIB (?C?CSTPTR)
+  E:\LEARNING_SYY\C51&STM32\KEIL5\C51\LIB\C51S.LIB (?C?PLDIIDATA)
+  E:\LEARNING_SYY\C51&STM32\KEIL5\C51\LIB\C51S.LIB (?C?CCASE)
+  E:\LEARNING_SYY\C51&STM32\KEIL5\C51\LIB\C51S.LIB (PUTCHAR)
+
+
+LINK MAP OF MODULE:  .\Objects\Test08_串行口提高篇01 (?C_STARTUP)
+
+
+            TYPE    BASE      LENGTH    RELOCATION   SEGMENT NAME
+            -----------------------------------------------------
+
+            * * * * * * *   D A T A   M E M O R Y   * * * * * * *
+            REG     0000H     0008H     ABSOLUTE     "REG BANK 0"
+            DATA    0008H     0018H     UNIT         ?DT?_________________
+            BIT     0020H.0   0001H.1   UNIT         _BIT_GROUP_
+                    0021H.1   0000H.7                *** GAP ***
+            DATA    0022H     001BH     UNIT         _DATA_GROUP_
+            IDATA   003DH     0001H     UNIT         ?STACK
+
+            * * * * * * *   C O D E   M E M O R Y   * * * * * * *
+            CODE    0000H     0003H     ABSOLUTE     
+            CODE    0003H     035CH     UNIT         ?PR?PRINTF?PRINTF
+            CODE    035FH     00B9H     UNIT         ?C?LIB_CODE
+            CODE    0418H     008CH     UNIT         ?C_C51STARTUP
+            CODE    04A4H     0070H     UNIT         ?PR?MAIN?_________________
+            CODE    0514H     0027H     UNIT         ?PR?PUTCHAR?PUTCHAR
+            CODE    053BH     001BH     UNIT         ?C_INITSEG
+            CODE    0556H     0006H     UNIT         ?CO?_________________
+
+
+
+OVERLAY MAP OF MODULE:   .\Objects\Test08_串行口提高篇01 (?C_STARTUP)
+
+
+SEGMENT                               BIT_GROUP          DATA_GROUP 
+  +--> CALLED SEGMENT              START    LENGTH     START    LENGTH
+----------------------------------------------------------------------
+?C_C51STARTUP                      -----    -----      -----    -----
+  +--> ?PR?MAIN?_________________
+  +--> ?C_INITSEG
+
+BL51 BANKED LINKER/LOCATER V6.22                                                      01/28/2020  14:37:36  PAGE 2
+
+
+?PR?MAIN?_________________         -----    -----      0022H    0007H
+  +--> ?CO?_________________
+  +--> ?PR?PRINTF?PRINTF
+
+?PR?PRINTF?PRINTF                  0020H.0  0001H.1    0029H    0014H
+  +--> ?PR?PUTCHAR?PUTCHAR
+
+
+
+SYMBOL TABLE OF MODULE:  .\Objects\Test08_串行口提高篇01 (?C_STARTUP)
+
+  VALUE           TYPE          NAME
+  ----------------------------------
+
+  -------         MODULE        ?C_STARTUP
+  C:0418H         SEGMENT       ?C_C51STARTUP
+  I:003DH         SEGMENT       ?STACK
+  C:0000H         PUBLIC        ?C_STARTUP
+  D:00E0H         SYMBOL        ACC
+  D:00F0H         SYMBOL        B
+  D:0083H         SYMBOL        DPH
+  D:0082H         SYMBOL        DPL
+  N:0000H         SYMBOL        IBPSTACK
+  N:0100H         SYMBOL        IBPSTACKTOP
+  N:0080H         SYMBOL        IDATALEN
+  C:041BH         SYMBOL        IDATALOOP
+  N:0000H         SYMBOL        PBPSTACK
+  N:0100H         SYMBOL        PBPSTACKTOP
+  N:0000H         SYMBOL        PDATALEN
+  N:0000H         SYMBOL        PDATASTART
+  N:0000H         SYMBOL        PPAGE
+  N:0000H         SYMBOL        PPAGEENABLE
+  D:00A0H         SYMBOL        PPAGE_SFR
+  D:0081H         SYMBOL        SP
+  C:0418H         SYMBOL        STARTUP1
+  N:0000H         SYMBOL        XBPSTACK
+  N:0000H         SYMBOL        XBPSTACKTOP
+  N:0000H         SYMBOL        XDATALEN
+  N:0000H         SYMBOL        XDATASTART
+  C:0000H         LINE#         126
+  C:0418H         LINE#         133
+  C:041AH         LINE#         134
+  C:041BH         LINE#         135
+  C:041CH         LINE#         136
+  C:041EH         LINE#         185
+  C:0421H         LINE#         196
+  -------         ENDMOD        ?C_STARTUP
+
+  -------         MODULE        _________________
+  C:0000H         SYMBOL        _ICE_DUMMY_
+  C:04A4H         PUBLIC        main
+  -------         PROC          MAIN
+  -------         DO            
+  D:0008H         SYMBOL        array
+  D:0022H         SYMBOL        ptr
+  D:0025H         SYMBOL        i
+  D:0027H         SYMBOL        j
+BL51 BANKED LINKER/LOCATER V6.22                                                      01/28/2020  14:37:36  PAGE 3
+
+
+  -------         ENDDO         
+  C:04A4H         LINE#         9
+  C:04A4H         LINE#         10
+  C:04A4H         LINE#         15
+  C:04A9H         LINE#         16
+  C:04A9H         LINE#         17
+  C:04AEH         LINE#         18
+  C:04AEH         LINE#         19
+  C:04E4H         LINE#         20
+  C:04F7H         LINE#         21
+  C:0500H         LINE#         22
+  C:0513H         LINE#         23
+  -------         ENDPROC       MAIN
+  -------         ENDMOD        _________________
+
+  -------         MODULE        ?C?ILDPTR
+  C:035FH         PUBLIC        ?C?ILDPTR
+  -------         ENDMOD        ?C?ILDPTR
+
+  -------         MODULE        PRINTF
+  D:0029H         PUBLIC        ?_PRINTF517?BYTE
+  D:0029H         PUBLIC        ?_PRINTF?BYTE
+  D:0029H         PUBLIC        ?_SPRINTF517?BYTE
+  D:0029H         PUBLIC        ?_SPRINTF?BYTE
+  C:0065H         PUBLIC        _PRINTF
+  C:0065H         PUBLIC        _PRINTF517
+  C:005FH         PUBLIC        _SPRINTF
+  C:005FH         PUBLIC        _SPRINTF517
+  -------         ENDMOD        PRINTF
+
+  -------         MODULE        ?C?CLDPTR
+  C:038AH         PUBLIC        ?C?CLDPTR
+  -------         ENDMOD        ?C?CLDPTR
+
+  -------         MODULE        ?C?CLDOPTR
+  C:03A3H         PUBLIC        ?C?CLDOPTR
+  -------         ENDMOD        ?C?CLDOPTR
+
+  -------         MODULE        ?C?CSTPTR
+  C:03D0H         PUBLIC        ?C?CSTPTR
+  -------         ENDMOD        ?C?CSTPTR
+
+  -------         MODULE        ?C?PLDIIDATA
+  C:03E2H         PUBLIC        ?C?PLDIIDATA
+  -------         ENDMOD        ?C?PLDIIDATA
+
+  -------         MODULE        ?C?CCASE
+  C:03F2H         PUBLIC        ?C?CCASE
+  -------         ENDMOD        ?C?CCASE
+
+  -------         MODULE        PUTCHAR
+  C:0514H         PUBLIC        _PUTCHAR
+  -------         ENDMOD        PUTCHAR
+
+Program Size: data=61.1 xdata=0 code=1372
+LINK/LOCATE RUN COMPLETE.  0 WARNING(S),  0 ERROR(S)
