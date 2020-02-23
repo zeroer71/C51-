@@ -1,0 +1,4 @@
+".\Objects\STARTUP.obj",
+".\Objects\DS18B20温度传感器设计温控系统.obj" 
+TO ".\Objects\Test12_设计温控系统" 
+PRINT(".\Listings\Test12_设计温控系统.m51") RAMSIZE(256) 
