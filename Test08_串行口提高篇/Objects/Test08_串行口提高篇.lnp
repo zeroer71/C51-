@@ -1,0 +1,4 @@
+".\Objects\STARTUP.obj",
+".\Objects\单片机通信_发送.obj" 
+TO ".\Objects\Test08_串行口提高篇" 
+PRINT(".\Listings\Test08_串行口提高篇.m51") RAMSIZE(256) 

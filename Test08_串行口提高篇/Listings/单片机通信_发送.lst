@@ -1,0 +1,318 @@
+C51 COMPILER V9.54   _______________                                                       01/23/2020 21:31:26 PAGE 1   
+
+
+C51 COMPILER V9.54, COMPILATION OF MODULE _______________
+OBJECT MODULE PLACED IN .\Objects\单片机通信_发送.obj
+COMPILER INVOKED BY: E:\Learning_syy\C51&STM32\Keil5\C51\BIN\C51.EXE 单片机通信_发送.c OPTIMIZE(8,SPEED) BROWSE DEBUG OB
+                    -JECTEXTEND PRINT(.\Listings\单片机通信_发送.lst) TABS(2) OBJECT(.\Objects\单片机通信_发送.obj)
+
+line level    source
+
+   1          /*
+   2          **********************************************************************************************************
+             -*************************************
+   3          *
+   4          *   模块名称 ： 矩阵键盘模块
+   5          *   文件名称 ： 单片机通信_发送.c
+   6          *   版本     ： v1.0
+   7          *   说明     ： 单片机通过串口发送键值给另一个单片机，键值来源于矩阵键盘的按键0~F
+   8          *   修改记录 ：
+   9          *       版本号    日期        作者      说明
+  10          *       v1.0    2020-01-23  Yang      v1.0版本进行测试
+  11          *       v1.1    2020-01-23  Yang      增加接收数据的功能
+  12          *       
+  13          *
+  14          **********************************************************************************************************
+             -*************************************
+  15          */
+  16          
+  17          #include <reg52.h>
+  18          #define uchar unsigned char
+  19          #define uint unsigned int
+  20          
+  21          //#define ONLY_TX
+  22          #define TX_RX
+  23          
+  24          sbit dula=P2^6;
+  25          sbit wela=P2^7;
+  26          
+  27          uchar code table[]={
+  28            0x3f,0x06,0x5b,0x4f,
+  29            0x66,0x6d,0x7d,0x07,
+  30            0x7f,0x6f,0x77,0x7c,
+  31            0x39,0x5e,0x79,0x71
+  32          };
+  33          
+  34          /*延时函数，延时n毫秒*/
+  35          void delay_ms(uint n)
+  36          {
+  37   1        uint i,j;
+  38   1        for(i=n;i>0;i--)
+  39   1          for(j=110;j>0;j--);
+  40   1      }
+  41          
+  42          /*发送数据函数*/
+  43          void SendData(uchar key_num)
+  44          {
+  45   1        SBUF=key_num;
+  46   1        while(!TI);//等待发送完成
+  47   1        TI=0;//发送完成后将TI重新置零，预备下一轮发送
+  48   1      }
+  49          
+  50          /*显示数码管前一位*/
+  51          void display(uchar num)
+  52          {
+C51 COMPILER V9.54   _______________                                                       01/23/2020 21:31:26 PAGE 2   
+
+  53   1        /*显示段数据*/
+  54   1        P0=table[num];
+  55   1        dula=1;
+  56   1        dula=0;
+  57   1        
+  58   1      }
+  59          
+  60          /*矩阵键盘检测*/
+  61          void MatrixKeyScan()
+  62          {
+  63   1        uchar key,temp;
+  64   1        /*temp=P3为扫描P3端口*/
+  65   1        
+  66   1        /*检测第一行*/
+  67   1        P3=0xfe;//第一行为低电平
+  68   1        temp=P3;
+  69   1        temp=temp&0xf0;//转换为列电平
+  70   1        if(temp!=0xf0)//第一次检测按键是否按下
+  71   1        {
+  72   2          delay_ms(10);//延时消抖
+  73   2          temp=P3;
+  74   2          temp=temp&0xf0;
+  75   2          if(temp!=0xf0)//第二次检测
+  76   2          {
+  77   3            temp=P3;
+  78   3            switch(temp)
+  79   3            {
+  80   4              case 0xee:
+  81   4                key=0;
+  82   4                break;
+  83   4              
+  84   4              case 0xde:
+  85   4                key=1;
+  86   4                break;
+  87   4              
+  88   4              case 0xbe:
+  89   4                key=2;
+  90   4                break;
+  91   4              
+  92   4              case 0x7e:
+  93   4                key=3;
+  94   4                break;
+  95   4            }
+  96   3            while(temp!=0xf0)//检测按键是否松开，没松开则一直检测
+  97   3            {
+  98   4              temp=P3;
+  99   4              temp=temp&0xf0;
+ 100   4            }
+ 101   3            SendData(key);//等按键松开后，再显示数字
+ 102   3          }
+ 103   2        }
+ 104   1        
+ 105   1        /*检测第二行*/
+ 106   1        P3=0xfd;//第二行为低电平
+ 107   1        temp=P3;
+ 108   1        temp=temp&0xf0;//转换为列电平
+ 109   1        if(temp!=0xf0)//第一次检测按键是否按下
+ 110   1        {
+ 111   2          delay_ms(10);//延时消抖
+ 112   2          temp=P3;
+ 113   2          temp=temp&0xf0;
+ 114   2          if(temp!=0xf0)//第二次检测
+C51 COMPILER V9.54   _______________                                                       01/23/2020 21:31:26 PAGE 3   
+
+ 115   2          {
+ 116   3            temp=P3;
+ 117   3            switch(temp)
+ 118   3            {
+ 119   4              case 0xed:
+ 120   4                key=4;
+ 121   4                break;
+ 122   4              
+ 123   4              case 0xdd:
+ 124   4                key=5;
+ 125   4                break;
+ 126   4              
+ 127   4              case 0xbd:
+ 128   4                key=6;
+ 129   4                break;
+ 130   4              
+ 131   4              case 0x7d:
+ 132   4                key=7;
+ 133   4                break;
+ 134   4            }
+ 135   3            while(temp!=0xf0)//检测按键是否松开，没松开则一直检测
+ 136   3            {
+ 137   4              temp=P3;
+ 138   4              temp=temp&0xf0;
+ 139   4            }
+ 140   3            SendData(key);//等按键松开后，再显示数字
+ 141   3          }
+ 142   2        }
+ 143   1        
+ 144   1        /*检测第三行*/
+ 145   1        P3=0xfb;//第三行为低电平
+ 146   1        temp=P3;
+ 147   1        temp=temp&0xf0;//转换为列电平
+ 148   1        if(temp!=0xf0)//第一次检测按键是否按下
+ 149   1        {
+ 150   2          delay_ms(10);//延时消抖
+ 151   2          temp=P3;
+ 152   2          temp=temp&0xf0;
+ 153   2          if(temp!=0xf0)//第二次检测
+ 154   2          {
+ 155   3            temp=P3;
+ 156   3            switch(temp)
+ 157   3            {
+ 158   4              case 0xeb:
+ 159   4                key=8;
+ 160   4                break;
+ 161   4              
+ 162   4              case 0xdb:
+ 163   4                key=9;
+ 164   4                break;
+ 165   4              
+ 166   4              case 0xbb:
+ 167   4                key=10;
+ 168   4                break;
+ 169   4              
+ 170   4              case 0x7b:
+ 171   4                key=11;
+ 172   4                break;
+ 173   4            }
+ 174   3            while(temp!=0xf0)//检测按键是否松开，没松开则一直检测
+ 175   3            {
+ 176   4              temp=P3;
+C51 COMPILER V9.54   _______________                                                       01/23/2020 21:31:26 PAGE 4   
+
+ 177   4              temp=temp&0xf0;
+ 178   4            }
+ 179   3            SendData(key);//等按键松开后，再显示数字
+ 180   3          }
+ 181   2        }
+ 182   1        
+ 183   1        /*检测第四行*/
+ 184   1        P3=0xf7;//第四行为低电平
+ 185   1        temp=P3;
+ 186   1        temp=temp&0xf0;//转换为列电平
+ 187   1        if(temp!=0xf0)//第一次检测按键是否按下
+ 188   1        {
+ 189   2          delay_ms(10);//延时消抖
+ 190   2          temp=P3;
+ 191   2          temp=temp&0xf0;
+ 192   2          if(temp!=0xf0)//第二次检测
+ 193   2          {
+ 194   3            temp=P3;
+ 195   3            switch(temp)
+ 196   3            {
+ 197   4              case 0xe7:
+ 198   4                key=12;
+ 199   4                break;
+ 200   4              
+ 201   4              case 0xd7:
+ 202   4                key=13;
+ 203   4                break;
+ 204   4              
+ 205   4              case 0xb7:
+ 206   4                key=14;
+ 207   4                break;
+ 208   4              
+ 209   4              case 0x77:
+ 210   4                key=15;
+ 211   4                break;
+ 212   4            }
+ 213   3            while(temp!=0xf0)//检测按键是否松开，没松开则一直检测
+ 214   3            {
+ 215   4              temp=P3;
+ 216   4              temp=temp&0xf0;
+ 217   4            }
+ 218   3            SendData(key);//等按键松开后，再显示数字
+ 219   3          }
+ 220   2        }
+ 221   1      }
+ 222          
+ 223          /*****************仅发送数据**********************/
+ 224          #ifdef ONLY_TX
+              
+              /*主函数*/
+              void main()
+              {
+                /*开启定时器1，设为工作方式2，可自动重装初值*/
+                TMOD=0x20;
+                TL1=0xfe;
+                TH1=0xfe;
+                TR1=1;
+                
+                /*串口设为工作方式1*/
+                SM0=0;
+                SM1=1;
+                EA=1;
+C51 COMPILER V9.54   _______________                                                       01/23/2020 21:31:26 PAGE 5   
+
+                ES=1;
+                
+                while(1)
+                {
+                  MatrixKeyScan();
+                }
+              }
+              
+              /*****************发送与接收数据**********************/
+              #ifdef TX_RX
+              
+              void main()
+              {
+                /*开启定时器1，设为工作方式2，可自动重装初值*/
+                TMOD=0x20;
+                TL1=0xfe;
+                TH1=0xfe;
+                TR1=1;
+                
+                /*串口设为工作方式1*/
+                SM0=0;
+                SM1=1;
+                EA=1;
+                ES=1;
+                REN=1;
+                
+                while(1)
+                {
+                  ES=0;
+                  delay_ms(5);
+                  MatrixKeyScan();
+                  ES=1;
+                }
+              } 
+              
+              /*串口中断函数，接收数据*/
+              void Serial() interrupt 5
+              {
+                uchar temp;
+                RI=0;
+                temp=SBUF;
+                display(temp);
+              }
+              
+              #endif
+*** WARNING C316 IN LINE 283 OF 单片机通信_发送.c: unterminated conditionals
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    407    ----
+   CONSTANT SIZE    =     16    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----       2
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  1 WARNING(S),  0 ERROR(S)
